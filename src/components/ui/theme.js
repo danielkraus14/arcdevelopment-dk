@@ -18,11 +18,10 @@ export default createMuiTheme({
         }
     },
     typography:{
-        tab:{
-            fontFamily: "Raleway",
-            textTransform: 'none',
-            fontWeight: 700,
-            fontSize: '1rem'
+        body1:{
+            fontSize: '1.25em',
+            color: arcGray,
+            fontWeight: 300
         },
         estimate:{
             fontFamily: 'Pacifico',
@@ -48,6 +47,15 @@ export default createMuiTheme({
             color: arcBlue,
             fontWeight: 700
         },
+        learnButton:{
+            borderColor: arcBlue,
+            color: arcBlue,
+            borderWidth: 2,
+            textTransform: 'none',
+            borderRadius: 50,
+            fontFamily: 'Roboto',
+            fontWeight: 'bold',
+        },
         subtitle1:{
             color: arcGray,
             fontSize: '1.25rem',
@@ -58,15 +66,12 @@ export default createMuiTheme({
             fontSize: '1.25rem',
             fontWeight: 300
         },
-        learnButton:{
-            borderColor: arcBlue,
-            color: arcBlue,
-            borderWidth: 2,
+        tab:{
+            fontFamily: "Raleway",
             textTransform: 'none',
-            borderRadius: 50,
-            fontFamily: 'Roboto',
-            fontWeight: 'bold',
-        }
+            fontWeight: 700,
+            fontSize: '1rem'
+        },
     },
 
 })

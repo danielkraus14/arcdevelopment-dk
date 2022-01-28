@@ -6,6 +6,7 @@ import theme from "./ui/theme";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "./LandingPage";
 import Services from './Services';
+import CustomSoftware from './CustomSoftware';
 
 function App() {
   const [value, setValue] = useState(0);
@@ -25,7 +26,7 @@ function App() {
           <Route
             exact
             path="/customsoftware"
-            element={<div>custom software</div>}
+            element={<CustomSoftware setSelectedIndex={setSelectedIndex} />}
           />
           <Route exact path="/mobileapps" element={<div>mobile Apps</div>} />
           <Route exact path="/websites" element={<div>web sites</div>} />
