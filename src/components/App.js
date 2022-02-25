@@ -9,6 +9,10 @@ import Services from './Services';
 import CustomSoftware from './CustomSoftware';
 import MobileApps from "./MobileApps";
 import Websites from "./Websites";
+import Revolution from "./Revolution";
+import AboutUs from "./AboutUs";
+import Contact from './Contact';
+import Estimate from './Estimate';
 
 function App() {
   const [value, setValue] = useState(0);
@@ -32,10 +36,10 @@ function App() {
           />
           <Route exact path="/mobileapps" element={<MobileApps setValue={setValue} setSelectedIndex={setSelectedIndex} />} />
           <Route exact path="/websites" element={<Websites setValue={setValue} setSelectedIndex={setSelectedIndex} />} />
-          <Route exact path="/revolution" element={<div>revolution</div>} />
-          <Route exact path="/about" element={<div>about</div>} />
-          <Route exact path="/contact" element={<div>contact</div>} />
-          <Route exact path="/estimate" element={<div>estimate</div>} />
+          <Route exact path="/revolution" element={<Revolution setValue={setValue} />} />
+          <Route exact path="/about" element={<AboutUs setValue={setValue} />} />
+          <Route exact path="/contact" element={<Contact setValue={setValue} />} />
+          <Route exact path="/estimate" element={<Estimate setValue={setValue} />} />
         </Routes>
         <Footer setValue={setValue} setSelectedIndex={setSelectedIndex} />
       </BrowserRouter>

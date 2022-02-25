@@ -369,7 +369,7 @@ const LandingPage = (props) => {
                 </Grid>
                 
                 <Grid sm item style={{marginRight: matchesXS ? 0 : matchesSM ? '2em' : '5em'}}>
-                    <Grid container direction='column' >
+                    <Grid container direction='column' alignItems={matchesXS ? 'center' : 'flex-end'} >
                         <Grid item>
                             <Typography variant='h2' style={{color: '#fff'}}>Contact Us</Typography>
                         </Grid>
