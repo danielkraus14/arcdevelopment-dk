@@ -328,7 +328,7 @@ const Contact = (props) => {
                 item
                 container
                 direction="column"
-                style={{ maxWidth:  matchesXS ? '100%' : "20em"  }}
+                style={{ width:  matchesSM ? '100%' : "20em"  }}
               >
                 <Grid item style={{ marginBottom: "0.5em" }}>
                   <TextField
@@ -367,7 +367,7 @@ const Contact = (props) => {
                 item
                 container
                 justify="center"
-                style={{ maxWidth: matchesXS ? '100%' : "20em" }}
+                style={{ width:  matchesSM ? '100%' : "20em" }}
               >
                 <TextField
                   multiline
