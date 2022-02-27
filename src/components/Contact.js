@@ -11,6 +11,8 @@ import {
   Dialog,
   DialogContent,
   Hidden,
+  CircularProgress,
+  Snackbar
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import ButtonArrow from "../components/ui/ButtonArrow";
@@ -91,6 +93,8 @@ const Contact = (props) => {
   const [phoneHelper, setPhoneHelper] = useState("");
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [aler, setAlert] = useState({open: false, message: '', backgroundColor: ''})
 
   const onChange = (event) => {
     let valid;
@@ -126,10 +130,43 @@ const Contact = (props) => {
   };
 
   const onConfirm = () => {
+    setLoading(true)
     axios.get('https://us-central1-material-ui-course-ca868.cloudfunctions.net/sendMail')
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
-  }
+      .then(res =>{
+          console.log(res)
+          setLoading(false)
+          setOpen(false)
+          setName('')
+          setEmail('')
+          setPhone('')
+          setMessage('')
+          setAlert({
+            open:true,
+            message: 'Message sent succesfully!',
+            backgroundColor: '#4BB543'
+          })}
+        )
+      .catch(err => {
+          console.log(err)
+          setLoading(false)
+          setAlert({
+            open:true,
+            message: 'Something went wrong, please try again!',
+            backgroundColor: '#FF3232'
+          })}
+        )
+  };
+  
+  const buttonContent = (
+    <React.Fragment>
+       Send Message
+        <img
+          alt="airplane"
+          src={airplane}
+          style={{ marginLeft: 10 }}
+        />
+    </React.Fragment>
+  )
 
   return (
     <Grid container>
@@ -407,12 +444,7 @@ const Contact = (props) => {
                     className={classes.sendButton}
                     onClick={onConfirm}
                   >
-                    Send Message
-                    <img
-                      alt="airplane"
-                      src={airplane}
-                      style={{ marginLeft: 10 }}
-                    />
+                   {loading ? <CircularProgress size={30} /> : buttonContent}
                   </Button>
                 </Grid>
                 <Hidden lgUp>
@@ -431,6 +463,8 @@ const Contact = (props) => {
           </Grid>
         </DialogContent>
       </Dialog>
+      {/*--SNACKBAR confirmation of sending message--*/}
+        <Snackbar open={alert.open} message={alert.message} ContentProps={{style:{backgroundColor: alert.backgroundColor}}} anchorOrigin={{vertical: 'top', horizontal:'center'}} onClose={()=> setAlert({...alert, open:false})} autoHideDuration={4200} />
       {/*--SECTION Revolution--*/}
       <Grid
         item
