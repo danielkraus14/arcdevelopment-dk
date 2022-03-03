@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from 'axios';
 import { cloneDeep } from "lodash";
 import {
   Grid,
@@ -11,7 +12,8 @@ import {
   Dialog,
   DialogContent,
   TextField,
-  Hidden
+  Hidden,
+  Snackbar
 } from "@material-ui/core";
 import Lottie from "react-lottie";
 
@@ -357,6 +359,8 @@ const Estimate = () => {
   const [customFeatures, setCustomFeatures] = useState([]);
   const [category, setCategory] = useState([]);
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState({open: false, message: '', backgroundColor: ''})
 
   const estimateOptions = {
     loop: true,
@@ -558,6 +562,47 @@ const Estimate = () => {
 
       setCategory(newCategory)
     }
+  };
+
+  const sendEstimate = ()=>{
+    setLoading(true)
+    axios.get('https://us-central1-materialui-course-test.cloudfunctions.net/sendMail',{params: {
+      name: name,
+      email: email,
+      phone: phone,
+      message: message,
+      total: total,
+      service: service,
+      platforms: platforms,
+      features: features,
+      customFeatures: customFeatures,
+      users: users,
+      category: category,
+
+    }})
+      .then(res =>{
+          console.log(res)
+          setLoading(false)
+          setDialogOpen(false)
+          setName('')
+          setEmail('')
+          setPhone('')
+          setMessage('')
+          setAlert({
+            open:true,
+            message: 'Message sent succesfully!',
+            backgroundColor: '#4BB543'
+          })}
+        )
+      .catch(err => {
+          console.log(err)
+          setLoading(false)
+          setAlert({
+            open:true,
+            message: 'Something went wrong, please try again!',
+            backgroundColor: '#FF3232'
+          })}
+        )
   }
 
   const softwareSelection = (
@@ -910,7 +955,7 @@ const Estimate = () => {
                 {questions.length > 2 ? softwareSelection : websiteSelection}
               </Grid>
               <Grid item>
-                <Button variant='contained' className={classes.estimateButton}>Place Request <img src={send} alt='paper airplane' style={{marginLeft: '0.5em'}} /> </Button>
+                <Button variant='contained' className={classes.estimateButton} onClick={sendEstimate}>Place Request <img src={send} alt='paper airplane' style={{marginLeft: '0.5em'}} /> </Button>
               </Grid>
               <Hidden mdUp>
                 <Grid item style={{marginTop: matchesSM ? '1.5em' : null}}>
@@ -921,6 +966,8 @@ const Estimate = () => {
           </Grid>
         </DialogContent>
       </Dialog>
+      {/*--SNACKBAR confirmation of sending message--*/}
+      <Snackbar open={alert.open} message={alert.message} ContentProps={{style:{backgroundColor: alert.backgroundColor}}} anchorOrigin={{vertical: 'top', horizontal:'center'}} onClose={()=> setAlert({...alert, open:false})} autoHideDuration={4200} />
     </Grid>
   );
 };

@@ -94,7 +94,7 @@ const Contact = (props) => {
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [aler, setAlert] = useState({open: false, message: '', backgroundColor: ''})
+  const [alert, setAlert] = useState({open: false, message: '', backgroundColor: ''})
 
   const onChange = (event) => {
     let valid;
@@ -131,7 +131,12 @@ const Contact = (props) => {
 
   const onConfirm = () => {
     setLoading(true)
-    axios.get('https://us-central1-material-ui-course-ca868.cloudfunctions.net/sendMail')
+    axios.get('https://us-central1-materialui-course-test.cloudfunctions.net/sendMail',{params: {
+      name: name,
+      email: email,
+      phone: phone,
+      message: message
+    }})
       .then(res =>{
           console.log(res)
           setLoading(false)
