@@ -13,7 +13,8 @@ import {
   DialogContent,
   TextField,
   Hidden,
-  Snackbar
+  Snackbar,
+  CircularProgress
 } from "@material-ui/core";
 import Lottie from "react-lottie";
 
@@ -584,13 +585,9 @@ const Estimate = () => {
           console.log(res)
           setLoading(false)
           setDialogOpen(false)
-          setName('')
-          setEmail('')
-          setPhone('')
-          setMessage('')
           setAlert({
             open:true,
-            message: 'Message sent succesfully!',
+            message: 'Estimate placed succesfully!',
             backgroundColor: '#4BB543'
           })}
         )
@@ -603,7 +600,26 @@ const Estimate = () => {
             backgroundColor: '#FF3232'
           })}
         )
-  }
+  };
+
+  const estimateDisabled = ()=>{
+    let disabled = true;
+
+    const emptySelections = questions.map(question => question.options.filter(option => option.selected)).filter(question => question.length === 0)
+
+    if(questions.length === 2){
+      if(emptySelections.length === 1){
+        disabled = false
+      }
+    } else if(questions.length === 1){
+      disabled = true
+    } else if(emptySelections.length < 3 && questions[questions.length - 1].options.filter(option => option.selected).length > 0){
+      disabled = false
+    }
+
+
+    return disabled;
+  };
 
   const softwareSelection = (
     <Grid item container direction='column'>
@@ -732,7 +748,7 @@ const Estimate = () => {
         {questions
           .filter((question) => question.active)
           .map((question, index) => (
-            <React.Fragment key={question.id}>
+            <React.Fragment key={index}>
               <Grid item >
                 {/*ITEM Title for the options*/}
                 <Typography
@@ -760,14 +776,14 @@ const Estimate = () => {
               </Grid>
               <Grid item container>
                 {/*ITEM Container for options*/}
-                {question.options.map((option) => (
+                {question.options.map((option,index) => (
                   <Grid
                     item
                     container
                     direction="column"
                     alignItems="center"
                     md
-                    key={option.id}
+                    key={index}
                     component={Button}
                     onClick={() => handleSelect(option.id)}
                     style={{
@@ -849,6 +865,7 @@ const Estimate = () => {
             variant="contained"
             className={classes.estimateButton}
             onClick={() => {setDialogOpen(true); getTotal(); getPlatforms(); getFeatures(); getCustomFeatures(); getCategory()}}
+            disabled={estimateDisabled()}
           >
             Get Estimate
           </Button>
@@ -872,6 +889,7 @@ const Estimate = () => {
             {/* CONTAINER with the texfields */}
             <Grid
               container
+              item
               direction="column"
               alignItems="center"
               md={7}
@@ -933,6 +951,7 @@ const Estimate = () => {
                     fullWidth
                     rows="10"
                     id="message"
+                    placeholder="Tell us more about your project"
                     value={message}
                     className={classes.message}
                     InputProps={{ disableUnderline: true }}
@@ -940,7 +959,7 @@ const Estimate = () => {
                   />
                 </Grid>
                 <Grid item>
-                  <Typography variant='body1' paragraph align={matchesSM ? 'center' : undefined}>
+                  <Typography variant='body1' paragraph align={matchesSM ? 'center' : undefined} style={{lineHeight:1.25}}>
                     We can create this digital solution for an estimated <span className={classes.specialText}>${total.toFixed(2)}</span>
                   </Typography>
                   <Typography variant="body1" paragraph align={matchesSM ? 'center' : undefined}>
@@ -955,7 +974,22 @@ const Estimate = () => {
                 {questions.length > 2 ? softwareSelection : websiteSelection}
               </Grid>
               <Grid item>
-                <Button variant='contained' className={classes.estimateButton} onClick={sendEstimate}>Place Request <img src={send} alt='paper airplane' style={{marginLeft: '0.5em'}} /> </Button>
+                <Button variant='contained' className={classes.estimateButton} onClick={sendEstimate} disabled={
+                      name.length === 0 ||
+                      emailHelper.length !== 0 ||
+                      email.length === 0 ||
+                      phoneHelper.length !== 0 ||
+                      phone.length === 0 ||
+                      message.length === 0
+                    }>
+                  {loading 
+                  ? (
+                  <CircularProgress /> )
+                  : (
+                  <React.Fragment>
+                    Place Request <img src={send} alt='paper airplane' style={{marginLeft: '0.5em'}} />
+                  </React.Fragment>)}  
+                </Button>
               </Grid>
               <Hidden mdUp>
                 <Grid item style={{marginTop: matchesSM ? '1.5em' : null}}>

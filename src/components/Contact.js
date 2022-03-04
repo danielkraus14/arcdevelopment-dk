@@ -416,6 +416,7 @@ const Contact = (props) => {
                   fullWidth
                   rows="10"
                   id="message"
+                  placeholder="Tell us more about your project"
                   value={message}
                   className={classes.message}
                   InputProps={{ disableUnderline: true }}
