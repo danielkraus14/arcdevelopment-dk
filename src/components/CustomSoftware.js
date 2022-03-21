@@ -202,9 +202,9 @@ const CustomSoftware = (props) => {
             container
             direction="column"
             md
-            style={{ maxWidth: "40em" }}
             alignItems="center"
             style={{
+              maxWidth: '40em',
               marginBottom: matchesSM ? "10em" : undefined,
               marginTop: matchesSM ? "10em" : undefined,
             }}

@@ -2,14 +2,14 @@ import React from "react";
 import { makeStyles, Grid, Hidden } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
-import footerAdornment from "../../assets/Footer Adornment.svg";
+import footerAdornment from "../../assets/footerAdornment.svg";
 import facebook from "../../assets/facebook.svg";
 import twitter from "../../assets/twitter.svg";
 import instagram from "../../assets/instagram.svg";
 
 const useStyles = makeStyles((theme) => ({
   footer: {
-    backgroundColor: theme.palette.common.blue,
+    backgroundColor: theme.palette.common.gray,
     width: "100%",
     zIndex: 1302,
     position: "relative",

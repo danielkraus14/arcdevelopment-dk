@@ -10,7 +10,7 @@ import {
 import { Link } from "react-router-dom";
 import ButtonArrow from "./ui/ButtonArrow";
 
-import customSoftwareIcon from "../assets/Custom Software Icon.svg";
+import customSoftwareIcon from "../assets/customSoftware.svg";
 import mobileAppsIcon from "../assets/mobileIcon.svg";
 import websiteIcon from "../assets/websiteIcon.svg";
 
