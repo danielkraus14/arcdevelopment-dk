@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import {
   makeStyles,
   Button,
@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       padding: 25,
     },
+    [theme.breakpoints.down("xs")]: {
+      padding: 5,
+    },
   },
   specialText: {
     fontFamily: "Pacifico",
@@ -47,8 +50,13 @@ const useStyles = makeStyles((theme) => ({
 
 const Services = (props) => {
   const theme = useTheme();
+  const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
   const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
+
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[]);
 
   return (
     <Fragment>
@@ -176,7 +184,7 @@ const Services = (props) => {
               Reach More. Discover More. Sell More.
             </Typography>
             <Typography variant="subtitle1">
-              Optimazed for Search Engines, built for speed.
+              Optimazed for Search Engines, {matchesXS && <br />} built for speed.
             </Typography>
             <Button
               variant="outlined"

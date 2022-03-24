@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Grid, makeStyles, useTheme, useMediaQuery, Typography, Avatar,Hidden} from '@material-ui/core';
 import CallToAction from './ui/CallToAction';
 
@@ -32,6 +32,10 @@ const useStyles = makeStyles((theme)=> ({
           paddingLeft: "1.5em",
           paddingRight: "1.5em",
         },
+        [theme.breakpoints.down("xs")]: {
+            paddingLeft: "1em",
+            paddingRight: "1em",
+          },
       },
 }))
 
@@ -41,6 +45,10 @@ const AboutUs = (props) => {
     const theme = useTheme();
     const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
     const matchesMD = useMediaQuery(theme.breakpoints.down('md'));
+
+    useEffect(()=>{
+        window.scrollTo(0,0)
+    },[])
 
     return ( 
         <Grid container direction='column'>
@@ -56,7 +64,7 @@ const AboutUs = (props) => {
             {/*SECTION History*/}
             <Grid item container className={classes.rowContainer} direction={matchesMD ? 'column' : 'row'} alignItems={matchesMD ? 'center' : undefined} justify='space-around' style={{marginTop: '10em', marginBottom:'10em'}}>
                 <Grid item>
-                    <Grid item container direction='column' lg style={{maxWidth: '35em'}}>
+                    <Grid item container direction='column' lg style={{maxWidth: '35em', marginTop: matchesXS ? '5em' : undefined}}>
                         <Grid item>
                             <Typography variant='h4' gutterBottom align={matchesMD ? 'center' : undefined}>
                                 History

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import {
   makeStyles,
@@ -94,7 +94,11 @@ const Contact = (props) => {
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({open: false, message: '', backgroundColor: ''})
+  const [alert, setAlert] = useState({open: false, message: '', backgroundColor: ''});
+
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[])
 
   const onChange = (event) => {
     let valid;

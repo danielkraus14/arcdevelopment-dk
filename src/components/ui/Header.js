@@ -7,6 +7,7 @@ import {
   Button,
   Menu,
   MenuItem,
+  MenuList,
   useMediaQuery,
   useTheme,
   SwipeableDrawer,
@@ -14,13 +15,20 @@ import {
   List,
   ListItem,
   ListItemText,
-  Typography
+  Paper,
+  ClickAwayListener,
+  Popper,
+  Grow,
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
+  Grid,
 } from "@material-ui/core";
 import React, { Fragment, useState, useEffect } from "react";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-
+import { ExpandMore } from "@mui/icons-material";
 import logo from "../../assets/logoAD.svg";
 
 function ElevationScroll(props) {
@@ -79,9 +87,9 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "50px",
     marginRight: "25px",
     height: "45px",
-    '&:hover':{
-      backgroundColor: theme.palette.secondary.light
-    }
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.light,
+    },
   },
   drawer: {
     backgroundColor: theme.palette.common.blue,
@@ -110,15 +118,26 @@ const useStyles = makeStyles((theme) => ({
   drawerEstimateItem: {
     backgroundColor: theme.palette.common.orange,
   },
+  expansion: {
+    backgroundColor: theme.palette.common.blue,
+    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+    "&.Mui-expanded": {
+      margin: 0,
+    },
+  },
+  expansionDetails:{
+    padding: 0
+  },
   menu: {
     backgroundColor: theme.palette.common.blue,
     color: "#fff",
     borderRadius: "0px",
+    zIndex: 1302,
   },
   menuItem: {
     ...theme.typography.tab,
     opacity: 0.7,
-    color: '#fff',
+    color: "#fff",
     "&:hover": {
       opacity: 1,
     },
@@ -159,28 +178,22 @@ const Header = (props) => {
 
   const menuOptions = [
     {
-      name: "Services",
-      link: "/services",
-      activeIndex: 1,
-      selectedIndex: 0,
-    },
-    {
       name: "Custom Software Development",
       link: "/customsoftware",
       activeIndex: 1,
-      selectedIndex: 1,
+      selectedIndex: 0,
     },
     {
       name: "iOS/Android Apps Development",
       link: "/mobileapps",
       activeIndex: 1,
-      selectedIndex: 2,
+      selectedIndex: 1,
     },
     {
       name: "Websites Development",
       link: "/websites",
       activeIndex: 1,
-      selectedIndex: 3,
+      selectedIndex: 2,
     },
   ];
 
@@ -229,7 +242,7 @@ const Header = (props) => {
             }
           }
           break;
-        case '/estimate':
+        case "/estimate":
           props.setValue(5);
           break;
         default:
@@ -237,6 +250,15 @@ const Header = (props) => {
       }
     });
   }, [props.value, props.selectedIndex, menuOptions, routes, props]);
+
+  function handleListKeyDown(event) {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      setOpenMenu(false);
+    } else if (event.key === "Escape") {
+      setOpenMenu(false);
+    }
+  }
 
   const tabs = (
     <Fragment>
@@ -256,6 +278,7 @@ const Header = (props) => {
             aria-owns={route.ariaOwns}
             aria-haspopup={route.ariaPopup}
             onMouseOver={route.mouseOver}
+            onMouseLeave={() => setOpenMenu(false)}
           />
         ))}
       </Tabs>
@@ -265,40 +288,65 @@ const Header = (props) => {
         className={classes.button}
         component={Link}
         to="/estimate"
-        onClick={()=> props.setValue(5)}
+        onClick={() => props.setValue(5)}
       >
         Free Estimate
       </Button>
-      <Menu
-        id="simple-menu"
-        anchorEl={anchorEl}
+      <Popper
         open={openMenu}
-        onClose={handleClose}
-        MenuListProps={{ onMouseLeave: handleClose }}
-        classes={{ paper: classes.menu }}
-        elevation={0}
-        keepMounted
-        style={{ zIndex: 1302 }}
+        anchorEl={anchorEl}
+        role={undefined}
+        placement="bottom-start"
+        transition
+        disablePortal
       >
-        {menuOptions.map((option, index) => {
-          return (
-            <MenuItem
-              key={`${option}${index}`}
-              onClick={(event) => {
-                handleClose();
-                props.setValue(1);
-                handleMenuItemClick(event, index);
-              }}
-              selected={index === props.selectedIndex && props.value === 1}
-              component={Link}
-              to={option.link}
-              classes={{ root: classes.menuItem }}
-            >
-              {option.name}
-            </MenuItem>
-          );
-        })}
-      </Menu>
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{
+              transformOrigin:
+                placement === "bottom-start" ? "left bottom" : "left top",
+            }}
+          >
+            <Paper classes={{ root: classes.menu }} elevation={0}>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList
+                  autoFocusItem={false}
+                  id="simple-menu"
+                  aria-labelledby="simple-button"
+                  onKeyDown={handleListKeyDown}
+                  onMouseOver={() => setOpenMenu(true)}
+                  onMouseLeave={handleClose}
+                  disablePadding
+                >
+                  {menuOptions.map((option, index) => {
+                    return (
+                      <MenuItem
+                        key={`${option}${index}`}
+                        onClick={(event) => {
+                          handleClose();
+                          props.setValue(1);
+                          handleMenuItemClick(event, index);
+                        }}
+                        selected={
+                          index === props.selectedIndex &&
+                          props.value === 1 &&
+                          window.location.pathname !== "/services"
+                        }
+                        component={Link}
+                        to={option.link}
+                        classes={{ root: classes.menuItem }}
+                      >
+                        {option.name}
+                      </MenuItem>
+                    );
+                  })}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
     </Fragment>
   );
 
@@ -314,31 +362,74 @@ const Header = (props) => {
       >
         <div className={classes.toolbarMargin}></div>
         <List disablePadding>
-          {routes.map((route) => (
-            <ListItem
-              key={`${route}${route.activeIndex}`}
-              divider
-              button
-              component={Link}
-              to={route.link}
-              onClick={() => {
-                setOpenDrawer(false);
-                props.setValue(route.activeIndex);
-              }}
-              selected={props.value === route.activeIndex}
-            >
-              <ListItemText
-                disableTypography
-                className={
-                  props.value === route.activeIndex
-                    ? classes.drawerItemSelected
-                    : classes.drawerItem
-                }
+          {routes.map((route) =>
+            route.name === "Services" ? (
+              <ExpansionPanel
+                key={route.name}
+                elevation={0}
+                classes={{ root: classes.expansion }}
               >
-                {route.name}
-              </ListItemText>
-            </ListItem>
-          ))}
+                <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+                  {route.name}
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails classes={{root: classes.expansionDetails}}>
+                  <Grid container direction="column">
+                    {menuOptions.map((route) => (
+                      <Grid item>
+                        <ListItem
+                          key={`${route}${route.selectedIndex}`}
+                          divider
+                          button
+                          component={Link}
+                          to={route.link}
+                          onClick={() => {
+                            setOpenDrawer(false);
+                            props.setSelectedIndex(route.selectedIndex);
+                          }}
+                          selected={props.value === route.activeIndex}
+                        >
+                          <ListItemText
+                            disableTypography
+                            className={
+                              props.value === route.activeIndex
+                                ? classes.drawerItemSelected
+                                : classes.drawerItem
+                            }
+                          >
+                            {route.name}
+                          </ListItemText>
+                        </ListItem>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            ) : (
+              <ListItem
+                key={`${route}${route.activeIndex}`}
+                divider
+                button
+                component={Link}
+                to={route.link}
+                onClick={() => {
+                  setOpenDrawer(false);
+                  props.setValue(route.activeIndex);
+                }}
+                selected={props.value === route.activeIndex}
+              >
+                <ListItemText
+                  disableTypography
+                  className={
+                    props.value === route.activeIndex
+                      ? classes.drawerItemSelected
+                      : classes.drawerItem
+                  }
+                >
+                  {route.name}
+                </ListItemText>
+              </ListItem>
+            )
+          )}
           <ListItem
             divider
             button
@@ -354,7 +445,9 @@ const Header = (props) => {
             <ListItemText
               disableTypography
               className={
-                props.value === 5 ? classes.drawerItemSelected : classes.drawerItem
+                props.value === 5
+                  ? classes.drawerItemSelected
+                  : classes.drawerItem
               }
             >
               Free Estimate

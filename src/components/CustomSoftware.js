@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import Lottie from "react-lottie";
 import { Link } from "react-router-dom";
 import {
@@ -83,6 +83,10 @@ const CustomSoftware = (props) => {
     },
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Fragment>
       <Grid container direction="column">
@@ -112,7 +116,12 @@ const CustomSoftware = (props) => {
             </Grid>
           </Hidden>
           <Grid item container direction="column" className={classes.heading}>
-            <Typography variant="h2" gutterBottom align={matchesMD ? "center" : undefined}>
+            <Typography
+              variant="h2"
+              gutterBottom
+              align={matchesMD ? "center" : undefined}
+              style={{fontSize: matchesXS ? '2rem' : '2.5rem', marginBottom: matchesXS ? '1.5rem' : undefined, lineHeight: matchesXS ? '1.1' : null}}
+              >
               Custom Software Development
             </Typography>
             <Typography
@@ -204,7 +213,7 @@ const CustomSoftware = (props) => {
             md
             alignItems="center"
             style={{
-              maxWidth: '40em',
+              maxWidth: "40em",
               marginBottom: matchesSM ? "10em" : undefined,
               marginTop: matchesSM ? "10em" : undefined,
             }}

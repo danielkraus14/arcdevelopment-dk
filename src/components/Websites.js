@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
   makeStyles,
   Grid,
@@ -51,6 +51,10 @@ const Websites = (props) => {
   const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
   const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
 
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[]);
+
   return (
     <Grid container direction="column">
       {/*Main container Websites Development --> */}
@@ -83,7 +87,8 @@ const Websites = (props) => {
               variant="h2"
               gutterBottom
               align={matchesMD ? "center" : undefined}
-            >
+              style={{fontSize: matchesXS ? '2rem' : '2.5rem', marginBottom: matchesXS ? '1.5rem' : undefined, lineHeight: matchesXS ? '1.1' : null}}
+              >
               Website Development
             </Typography>
           </Grid>
@@ -132,7 +137,6 @@ const Websites = (props) => {
         className={classes.rowContainer}
         alignItems="center"
         direction={matchesSM ? "column" : "row"}
-        className={classes.rowContainer}
         style={{marginTop: '15em'}}
       >
         <Grid item>
@@ -175,7 +179,6 @@ const Websites = (props) => {
         direction={matchesSM ? "column" : "row"}
         justify={matchesSM ? undefined : "flex-end"}
         style={{marginTop: '10em', marginBottom: '10em'}}
-        className={classes.rowContainer}
       >
         <Grid item>
           <Grid item container direction="column">
@@ -214,7 +217,6 @@ const Websites = (props) => {
         className={classes.rowContainer}
         alignItems="center"
         direction={matchesSM ? "column" : "row"}
-        className={classes.rowContainer}
       >
         <Grid item>
           <Grid item container direction="column">
@@ -254,7 +256,6 @@ const Websites = (props) => {
         direction={matchesSM ? "column" : "row"}
         justify={matchesSM ? undefined : "flex-end"}
         style={{marginTop: '10em', marginBottom: '15em'}}
-        className={classes.rowContainer}
       >
         <Grid item>
           <Grid item container direction="column">

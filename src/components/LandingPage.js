@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import Lottie from "react-lottie";
 import {
   makeStyles,
@@ -117,6 +117,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       padding: 25,
     },
+    [theme.breakpoints.down("xs")]: {
+      padding: 5,
+    },
   },
   specialText: {
     fontFamily: "Pacifico",
@@ -141,6 +144,10 @@ const LandingPage = (props) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[]);
 
   return (
     <Fragment>
@@ -300,7 +307,7 @@ const LandingPage = (props) => {
                 Reach More. Discover More. Sell More.
               </Typography>
               <Typography variant="subtitle1">
-                Optimazed for Search Engines, built for speed.
+                Optimazed for Search Engines, {matchesXS && <br />} built for speed.
               </Typography>
               <Button variant="outlined" className={classes.learnButton} component={Link} to='/websites' onClick={()=> {props.setValue(1); props.setSelectedIndex(3)}}>
                 <span style={{ marginRight: 10 }}>Learn More</span>

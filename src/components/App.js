@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./ui/Header";
 import Footer from "./ui/Footer";
 import { ThemeProvider } from "@material-ui/styles";
@@ -18,6 +18,9 @@ function App() {
   const [value, setValue] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[])
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>

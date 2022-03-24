@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import axios from 'axios';
+import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import { cloneDeep } from "lodash";
 import {
   Grid,
@@ -14,7 +14,7 @@ import {
   TextField,
   Hidden,
   Snackbar,
-  CircularProgress
+  CircularProgress,
 } from "@material-ui/core";
 import Lottie from "react-lottie";
 
@@ -53,11 +53,11 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 50,
     height: 45,
     width: 225,
-    [theme.breakpoints.down('lg')]:{
-      marginTop: "5em"
+    [theme.breakpoints.down("lg")]: {
+      marginTop: "5em",
     },
-    [theme.breakpoints.down('sm')]:{
-      marginTop: "2em"
+    [theme.breakpoints.down("sm")]: {
+      marginTop: "2em",
     },
     "&:hover": {
       backgroundColor: theme.palette.secondary.light,
@@ -73,12 +73,12 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 5,
     marginBottom: "3em",
   },
-  specialText:{
-    fontFamily: 'Raleway',
+  specialText: {
+    fontFamily: "Raleway",
     fontWeight: 700,
-    fontSize: '1.5rem',
-    color: theme.palette.common.orange
-  }
+    fontSize: "1.5rem",
+    color: theme.palette.common.orange,
+  },
 }));
 
 const defaultQuestions = [
@@ -351,9 +351,7 @@ const Estimate = () => {
   const [phoneHelper, setPhoneHelper] = useState("");
   const [message, setMessage] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-
   const [total, setTotal] = useState(0);
-
   const [service, setService] = useState([]);
   const [platforms, setPlatforms] = useState([]);
   const [features, setFeatures] = useState([]);
@@ -361,7 +359,12 @@ const Estimate = () => {
   const [category, setCategory] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({open: false, message: '', backgroundColor: ''})
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    backgroundColor: "",
+  });
+  const titleRef = useRef()
 
   const estimateOptions = {
     loop: true,
@@ -373,6 +376,8 @@ const Estimate = () => {
   };
 
   const nextQuestion = () => {
+
+    if(matchesMD){window.scrollTo(0, titleRef.current.offsetTop + 75)}
     const newQuestion = cloneDeep(questions);
     const currentlyActive = newQuestion.filter((question) => question.active);
     const activeIndex = currentlyActive[0].id - 1;
@@ -384,6 +389,8 @@ const Estimate = () => {
     setQuestions(newQuestion);
   };
   const previousQuestion = () => {
+
+    if(matchesMD){window.scrollTo(0, titleRef.current.offsetTop + 75)}
     const newQuestion = cloneDeep(questions);
     const currentlyActive = newQuestion.filter((question) => question.active);
     const activeIndex = currentlyActive[0].id - 1;
@@ -441,31 +448,34 @@ const Estimate = () => {
 
     switch (newSelected.title) {
       case "Custom Software Development":
+        if(matchesMD){window.scrollTo(0, titleRef.current.offsetTop + 75)}
         setQuestions(softwareQuestions);
         setService(newSelected.title);
         setPlatforms([]);
         setFeatures([]);
-        setCustomFeatures('');
-        setCategory('');
-        setUsers('');
+        setCustomFeatures("");
+        setCategory("");
+        setUsers("");
         break;
       case "iOS/Android App Development":
+        if(matchesMD){window.scrollTo(0, titleRef.current.offsetTop + 75)}
         setQuestions(softwareQuestions);
         setService(newSelected.title);
         setPlatforms([]);
         setFeatures([]);
-        setCustomFeatures('');
-        setCategory('');
-        setUsers('');
+        setCustomFeatures("");
+        setCategory("");
+        setUsers("");
         break;
       case "Website Development":
+        if(matchesMD){window.scrollTo(0, titleRef.current.offsetTop + 75)}
         setQuestions(websiteQuestions);
         setService(newSelected.title);
         setPlatforms([]);
         setFeatures([]);
-        setCustomFeatures('');
-        setCategory('');
-        setUsers('');
+        setCustomFeatures("");
+        setCategory("");
+        setUsers("");
         break;
       default:
         setQuestions(newQuestion);
@@ -505,17 +515,25 @@ const Estimate = () => {
     }
   };
 
-  const getTotal = ()=>{
+  const getTotal = () => {
     let cost = 0;
 
-    const selections = questions.map(question => question.options.filter(option => option.selected)).filter(question => question.length > 0);
+    const selections = questions
+      .map((question) => question.options.filter((option) => option.selected))
+      .filter((question) => question.length > 0);
 
-    selections.map(options => options.map(option => cost += option.cost ))
+    selections.map((options) => options.map((option) => (cost += option.cost)));
 
-    if(questions.length > 2){
-      const users = questions.filter(question => question.title === "How many users do you expect?").map(question => question.options.filter(option => option.selected))[0][0];
+    if (questions.length > 2) {
+      const users = questions
+        .filter(
+          (question) => question.title === "How many users do you expect?"
+        )
+        .map((question) =>
+          question.options.filter((option) => option.selected)
+        )[0][0];
 
-      setUsers(users.title)
+      setUsers(users.title);
 
       cost -= users.cost;
       cost *= users.cost;
@@ -524,113 +542,158 @@ const Estimate = () => {
     setTotal(cost);
   };
 
-  const getPlatforms = ()=>{
+  const getPlatforms = () => {
     let newPlatforms = [];
 
-    if(questions.length > 2){
-
-      questions.filter(question => question.title === "Which platforms do you need supported?").map(question => question.options.filter(option => option.selected))[0].map(option => newPlatforms.push(option.title))
+    if (questions.length > 2) {
+      questions
+        .filter(
+          (question) =>
+            question.title === "Which platforms do you need supported?"
+        )
+        .map((question) =>
+          question.options.filter((option) => option.selected)
+        )[0]
+        .map((option) => newPlatforms.push(option.title));
 
       setPlatforms(newPlatforms);
     }
   };
-  const getFeatures = ()=>{
+  const getFeatures = () => {
     let newFeatures = [];
 
-    if(questions.length > 2){
-
-      questions.filter(question => question.title === "Which features do you expect to use?").map(question => question.options.filter(option => option.selected)).map(option => option.map(newFeature => newFeatures.push(newFeature.title)))
+    if (questions.length > 2) {
+      questions
+        .filter(
+          (question) =>
+            question.title === "Which features do you expect to use?"
+        )
+        .map((question) => question.options.filter((option) => option.selected))
+        .map((option) =>
+          option.map((newFeature) => newFeatures.push(newFeature.title))
+        );
 
       setFeatures(newFeatures);
-
     }
   };
-  const getCustomFeatures = ()=>{
+  const getCustomFeatures = () => {
     let newCustomFeatures = [];
 
-    if(questions.length > 2){
-
-      questions.filter(question => question.title === "What type of custom features do you expect to need?").map(question => question.options.filter(option => option.selected))[0].map(option => newCustomFeatures.push(option.title))
+    if (questions.length > 2) {
+      questions
+        .filter(
+          (question) =>
+            question.title ===
+            "What type of custom features do you expect to need?"
+        )
+        .map((question) =>
+          question.options.filter((option) => option.selected)
+        )[0]
+        .map((option) => newCustomFeatures.push(option.title));
 
       setCustomFeatures(newCustomFeatures);
-
     }
   };
 
-  const getCategory = ()=>{
-    if(questions.length === 2){
-      const newCategory = questions.filter(question => question.title === "Which type of website are you wanting?")[0].options.filter(option => option.selected)[0].title
+  const getCategory = () => {
+    if (questions.length === 2) {
+      const newCategory = questions
+        .filter(
+          (question) =>
+            question.title === "Which type of website are you wanting?"
+        )[0]
+        .options.filter((option) => option.selected)[0].title;
 
-      setCategory(newCategory)
+      setCategory(newCategory);
     }
   };
 
-  const sendEstimate = ()=>{
-    setLoading(true)
-    axios.get('https://us-central1-materialui-course-test.cloudfunctions.net/sendMail',{params: {
-      name: name,
-      email: email,
-      phone: phone,
-      message: message,
-      total: total,
-      service: service,
-      platforms: platforms,
-      features: features,
-      customFeatures: customFeatures,
-      users: users,
-      category: category,
-
-    }})
-      .then(res =>{
-          console.log(res)
-          setLoading(false)
-          setDialogOpen(false)
-          setAlert({
-            open:true,
-            message: 'Estimate placed succesfully!',
-            backgroundColor: '#4BB543'
-          })}
-        )
-      .catch(err => {
-          console.log(err)
-          setLoading(false)
-          setAlert({
-            open:true,
-            message: 'Something went wrong, please try again!',
-            backgroundColor: '#FF3232'
-          })}
-        )
+  const sendEstimate = () => {
+    setLoading(true);
+    axios
+      .get(
+        "https://us-central1-materialui-course-test.cloudfunctions.net/sendMail",
+        {
+          params: {
+            name: name,
+            email: email,
+            phone: phone,
+            message: message,
+            total: total,
+            service: service,
+            platforms: platforms,
+            features: features,
+            customFeatures: customFeatures,
+            users: users,
+            category: category,
+          },
+        }
+      )
+      .then((res) => {
+        setLoading(false);
+        setDialogOpen(false);
+        setAlert({
+          open: true,
+          message: "Estimate placed succesfully!",
+          backgroundColor: "#4BB543",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+        setAlert({
+          open: true,
+          message: "Something went wrong, please try again!",
+          backgroundColor: "#FF3232",
+        });
+      });
   };
 
-  const estimateDisabled = ()=>{
+  const estimateDisabled = () => {
     let disabled = true;
 
-    const emptySelections = questions.map(question => question.options.filter(option => option.selected)).filter(question => question.length === 0)
+    const emptySelections = questions
+      .filter(question => question.title !== "Which features do you expect to use?")
+      .map((question) => question.options.filter((option) => option.selected))
+      .filter((question) => question.length === 0)
 
-    if(questions.length === 2){
-      if(emptySelections.length === 1){
-        disabled = false
+    const featuresSelected = questions
+      .filter(question => question.title === "Which features do you expect to use?" )  
+      .map(question => question.options.filter(option => option.selected))
+      .filter(selections => selections.length > 0);
+      console.log(featuresSelected);
+
+    if (questions.length === 2) {
+      if (emptySelections.length === 1) {
+        disabled = false;
       }
-    } else if(questions.length === 1){
-      disabled = true
-    } else if(emptySelections.length < 3 && questions[questions.length - 1].options.filter(option => option.selected).length > 0){
-      disabled = false
+    } else if (questions.length === 1) {
+      disabled = true;
+    } else if (
+      emptySelections.length === 1 && featuresSelected.length > 0
+    ) {
+      disabled = false;
     }
-
 
     return disabled;
   };
 
   const softwareSelection = (
-    <Grid item container direction='column'>
-      <Grid item container alignItems="center" style={{marginBottom:'1.5em'}}>
+    <Grid item container direction="column">
+      <Grid
+        item
+        container
+        alignItems="center"
+        style={{ marginBottom: "1.5em" }}
+      >
         <Grid item xs={2}>
-          <img src={check} alt='check' />
+          <img src={check} alt="check" />
         </Grid>
         <Grid item xs={10}>
-          <Typography variant='body1'>
+          <Typography variant="body1">
             You want {service}
-              {platforms.length > 0 ? ` for ${
+            {platforms.length > 0
+              ? ` for ${
                   //if only web application is selected...
                   platforms.indexOf("Web Application") > -1 &&
                   platforms.length === 1
@@ -654,52 +717,66 @@ const Estimate = () => {
                     ? //then finish the sentence here
                       "a Web Application, an iOS Application, and an Android Application."
                     : null
-                }` : null}
+                }`
+              : null}
           </Typography>
         </Grid>
       </Grid>
-      <Grid item container alignItems="center" style={{marginBottom:'1.5em'}}>
+      <Grid
+        item
+        container
+        alignItems="center"
+        style={{ marginBottom: "1.5em" }}
+      >
         <Grid item xs={2}>
-          <img src={check} alt='check' />
+          <img src={check} alt="check" />
         </Grid>
         <Grid item xs={10}>
-          <Typography variant='body1'>
-          {"with "}
+          <Typography variant="body1">
+            {"with "}
             {/* if we have features... */}
             {features.length > 0
               ? //...and there's only 1...
                 features.length === 1
-                  ? //then end the sentence here
+                ? //then end the sentence here
                   `${features[0]}.`
-                  : //otherwise, if there are two features...
+                : //otherwise, if there are two features...
                 features.length === 2
-                  ? //...then end the sentence here
+                ? //...then end the sentence here
                   `${features[0]} and ${features[1]}.`
-                  : //otherwise, if there are three or more features...
+                : //otherwise, if there are three or more features...
                   features
-                //filter out the very last feature...
-                .filter(
-                  (feature, index) =>
-                  index !== features.length - 1 && index !== features.length -2
-                )
-                //and for those features return their name...
-                .map((feature, index) => (
-                  <span key={index}>{`${feature}, `}</span>
-                ))
+                    //filter out the very last feature...
+                    .filter(
+                      (feature, index) =>
+                        index !== features.length - 1 &&
+                        index !== features.length - 2
+                    )
+                    //and for those features return their name...
+                    .map((feature, index) => (
+                      <span key={index}>{`${feature}, `}</span>
+                    ))
               : null}
             {features.length > 2
-                ? //...and then finally add the last feature with 'and' in front of it
-                ` ${features[features.length -2]} and ${features[features.length - 1]}.`
-                : null}
+              ? //...and then finally add the last feature with 'and' in front of it
+                ` ${features[features.length - 2]} and ${
+                  features[features.length - 1]
+                }.`
+              : null}
           </Typography>
         </Grid>
       </Grid>
-      <Grid item container alignItems="center" style={{marginBottom:'1.5em'}}>
+      <Grid
+        item
+        container
+        alignItems="center"
+        style={{ marginBottom: "1.5em" }}
+      >
         <Grid item xs={2}>
-          <img src={check} alt='check' />
+          <img src={check} alt="check" />
         </Grid>
         <Grid item xs={10}>
-          <Typography variant='body1'>
+          <Typography variant="body1">
             The custom feature will be of {customFeatures}
             {`, and the project will be used by ${users} users`}
           </Typography>
@@ -709,30 +786,58 @@ const Estimate = () => {
   );
 
   const websiteSelection = (
-    <Grid item container direction='column' style={{marginTop: matchesSM ? 0 : '14em'}}>
-      <Grid item container alignItems="center" style={{marginBottom:'1.5em'}}>
+    <Grid
+      item
+      container
+      direction="column"
+      style={{ marginTop: matchesSM ? 0 : "14em" }}
+    >
+      <Grid
+        item
+        container
+        alignItems="center"
+        style={{ marginBottom: "1.5em" }}
+      >
         <Grid item xs={2}>
-          <img src={check} alt='check' />
+          <img src={check} alt="check" />
         </Grid>
         <Grid item xs={10}>
           <Typography variant="body1">
-            You want {category === "Basic" ? 'a basic website' : `an ${category} website`}
+            You want{" "}
+            {category === "Basic"
+              ? "a basic website"
+              : `an ${category} website`}
           </Typography>
         </Grid>
       </Grid>
     </Grid>
   );
-
+ 
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[])
 
   return (
     <Grid container>
       {/*MAIN CONTAINER*/}
-      <Grid item container direction="column" alignItems={matchesMD ? 'center' : undefined} lg>
+      <Grid
+        item
+        container
+        direction="column"
+        alignItems={matchesMD ? "center" : undefined}
+        lg
+      >
         {/*CONTAINER Title and animation*/}
-        <Grid item style={{ marginTop: "2em", marginLeft: matchesMD ? 0 : "5em" }}>
+        <Grid
+          item
+          style={{ marginTop: "2em", marginLeft: matchesMD ? 0 : "5em" }}
+        >
           <Typography variant="h2">Estimate</Typography>
         </Grid>
-        <Grid item style={{ marginRight: matchesMD ? 0 : "10em", maxWidth: "50em" }}>
+        <Grid
+          item
+          style={{ marginRight: matchesMD ? 0 : "10em", maxWidth: "50em" }}
+        >
           <Lottie options={estimateOptions} height="100%" width="100%" />
         </Grid>
       </Grid>
@@ -749,7 +854,7 @@ const Estimate = () => {
           .filter((question) => question.active)
           .map((question, index) => (
             <React.Fragment key={index}>
-              <Grid item >
+              <Grid item ref={titleRef}>
                 {/*ITEM Title for the options*/}
                 <Typography
                   variant="h2"
@@ -758,8 +863,8 @@ const Estimate = () => {
                     fontWeight: 500,
                     fontSize: "2.25rem",
                     marginTop: "5em",
-                    marginLeft: matchesSM ? '0.5em' : 0, 
-                    marginRight: matchesSM ? '0.5em' : 0,
+                    marginLeft: matchesSM ? "0.5em" : 0,
+                    marginRight: matchesSM ? "0.5em" : 0,
                     lineHeight: 1.25,
                   }}
                 >
@@ -776,7 +881,7 @@ const Estimate = () => {
               </Grid>
               <Grid item container>
                 {/*ITEM Container for options*/}
-                {question.options.map((option,index) => (
+                {question.options.map((option, index) => (
                   <Grid
                     item
                     container
@@ -790,7 +895,7 @@ const Estimate = () => {
                       textTransform: "none",
                       display: "grid",
                       borderRadius: 0,
-                      marginBottom: matchesSM ? '1.5em' : 0,
+                      marginBottom: matchesSM ? "1.5em" : 0,
                       backgroundColor: option.selected
                         ? theme.palette.common.orange
                         : null,
@@ -864,27 +969,46 @@ const Estimate = () => {
           <Button
             variant="contained"
             className={classes.estimateButton}
-            onClick={() => {setDialogOpen(true); getTotal(); getPlatforms(); getFeatures(); getCustomFeatures(); getCategory()}}
+            onClick={() => {
+              setDialogOpen(true);
+              getTotal();
+              getPlatforms();
+              getFeatures();
+              getCustomFeatures();
+              getCategory();
+            }}
             disabled={estimateDisabled()}
           >
             Get Estimate
           </Button>
         </Grid>
       </Grid>
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth='lg' fullScreen={matchesSM} style={{zIndex: 1302}}>
-        <Grid container justify="center" direction={matchesSM ? 'column' : 'row'} alignItem={matchesSM ? 'center' : undefined}>
-          <Grid item style={{marginTop: '1em', marginBottom: '0.5em'}}>
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        fullWidth
+        maxWidth="lg"
+        fullScreen={matchesSM}
+        style={{ zIndex: 1302 }}
+      >
+        <Grid
+          container
+          justify="center"
+          direction={matchesSM ? "column" : "row"}
+          alignItem={matchesSM ? "center" : undefined}
+        >
+          <Grid item style={{ marginTop: "1em", marginBottom: "0.5em" }}>
             <Typography variant="h2" align="center">
               Estimate
             </Typography>
           </Grid>
         </Grid>
         <DialogContent>
-          <Grid 
+          <Grid
             container
-            direction={matchesSM ? 'column' : 'row'}
+            direction={matchesSM ? "column" : "row"}
             justify="space-around"
-            alignItems={matchesSM ? 'center' : undefined}
+            alignItems={matchesSM ? "center" : undefined}
           >
             {/* CONTAINER with the texfields */}
             <Grid
@@ -893,9 +1017,9 @@ const Estimate = () => {
               direction="column"
               alignItems="center"
               md={7}
-              style={{maxWidth: '20em'}}
+              style={{ maxWidth: "20em" }}
             >
-              <Grid item style={{marginTop: matchesMD ? '1.5em' : 0}}>
+              <Grid item style={{ marginTop: matchesMD ? "1.5em" : 0 }}>
                 <Typography variant="h4" gutterBottom>
                   Confirm Message
                 </Typography>
@@ -959,41 +1083,81 @@ const Estimate = () => {
                   />
                 </Grid>
                 <Grid item>
-                  <Typography variant='body1' paragraph align={matchesSM ? 'center' : undefined} style={{lineHeight:1.25}}>
-                    We can create this digital solution for an estimated <span className={classes.specialText}>${total.toFixed(2)}</span>
+                  <Typography
+                    variant="body1"
+                    paragraph
+                    align={matchesSM ? "center" : undefined}
+                    style={{ lineHeight: 1.25 }}
+                  >
+                    We can create this digital solution for an estimated{" "}
+                    <span className={classes.specialText}>
+                      ${total.toFixed(2)}
+                    </span>
                   </Typography>
-                  <Typography variant="body1" paragraph align={matchesSM ? 'center' : undefined}>
-                    Fill on yor name, phone number and email, place your request, and we'll back to you with details moving forward and a final price.
+                  <Typography
+                    variant="body1"
+                    paragraph
+                    align={matchesSM ? "center" : undefined}
+                  >
+                    Fill on yor name, phone number and email, place your
+                    request, and we'll back to you with details moving forward
+                    and a final price.
                   </Typography>
                 </Grid>
               </Grid>
             </Grid>
             {/*ITEM with options checked */}
-            <Grid item container direction='column' alignItems={matchesSM ? 'center' : undefined} md={5} style={{maxWidth: '30em', marginTop: matchesMD ? '1.5em' : undefined}}>
+            <Grid
+              item
+              container
+              direction="column"
+              alignItems={matchesSM ? "center" : undefined}
+              md={5}
+              style={{
+                maxWidth: "30em",
+                marginTop: matchesMD ? "1.5em" : undefined,
+              }}
+            >
               <Grid item>
                 {questions.length > 2 ? softwareSelection : websiteSelection}
               </Grid>
               <Grid item>
-                <Button variant='contained' className={classes.estimateButton} onClick={sendEstimate} disabled={
-                      name.length === 0 ||
-                      emailHelper.length !== 0 ||
-                      email.length === 0 ||
-                      phoneHelper.length !== 0 ||
-                      phone.length === 0 ||
-                      message.length === 0
-                    }>
-                  {loading 
-                  ? (
-                  <CircularProgress /> )
-                  : (
-                  <React.Fragment>
-                    Place Request <img src={send} alt='paper airplane' style={{marginLeft: '0.5em'}} />
-                  </React.Fragment>)}  
+                <Button
+                  variant="contained"
+                  className={classes.estimateButton}
+                  onClick={sendEstimate}
+                  disabled={
+                    name.length === 0 ||
+                    emailHelper.length !== 0 ||
+                    email.length === 0 ||
+                    phoneHelper.length !== 0 ||
+                    phone.length === 0 ||
+                    message.length === 0
+                  }
+                >
+                  {loading ? (
+                    <CircularProgress />
+                  ) : (
+                    <React.Fragment>
+                      Place Request{" "}
+                      <img
+                        src={send}
+                        alt="paper airplane"
+                        style={{ marginLeft: "0.5em" }}
+                      />
+                    </React.Fragment>
+                  )}
                 </Button>
               </Grid>
               <Hidden mdUp>
-                <Grid item style={{marginTop: matchesSM ? '1.5em' : null}}>
-                  <Button style={{fontWeight: 300}} color='primary' onClick={()=> setDialogOpen(false)}>Cancel</Button>
+                <Grid item style={{ marginTop: matchesSM ? "1.5em" : null }}>
+                  <Button
+                    style={{ fontWeight: 300 }}
+                    color="primary"
+                    onClick={() => setDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
                 </Grid>
               </Hidden>
             </Grid>
@@ -1001,7 +1165,14 @@ const Estimate = () => {
         </DialogContent>
       </Dialog>
       {/*--SNACKBAR confirmation of sending message--*/}
-      <Snackbar open={alert.open} message={alert.message} ContentProps={{style:{backgroundColor: alert.backgroundColor}}} anchorOrigin={{vertical: 'top', horizontal:'center'}} onClose={()=> setAlert({...alert, open:false})} autoHideDuration={4200} />
+      <Snackbar
+        open={alert.open}
+        message={alert.message}
+        ContentProps={{ style: { backgroundColor: alert.backgroundColor } }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        onClose={() => setAlert({ ...alert, open: false })}
+        autoHideDuration={4200}
+      />
     </Grid>
   );
 };

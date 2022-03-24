@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import {
   makeStyles,
   Grid,
@@ -55,6 +55,10 @@ const MobileApps = (props) => {
     },
   };
 
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[]);
+
   return (
     <Fragment>
       <Grid container direction="column">
@@ -89,6 +93,7 @@ const MobileApps = (props) => {
                 variant="h2"
                 gutterBottom
                 align={matchesMD ? "center" : undefined}
+                style={{fontSize: matchesXS ? '2rem' : '2.5rem', marginBottom: matchesXS ? '1.5rem' : undefined, lineHeight: matchesXS ? '1.1' : null}}
               >
                 iOS/Android App Development
               </Typography>
