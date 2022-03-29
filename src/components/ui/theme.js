@@ -104,7 +104,13 @@ export default createMuiTheme({
                     borderBottom: `2px solid ${arcBlue}`
                 }
             }
-        }
+        },
+        MuiExpansionPanelSummary:{
+            content:{
+                margin: 0
+            }
+        },
+        
     }
 
 })

@@ -13,12 +13,15 @@ import Revolution from "./Revolution";
 import AboutUs from "./AboutUs";
 import Contact from './Contact';
 import Estimate from './Estimate';
+import Fonts from "./ui/Fonts";
 
 function App() {
   const [value, setValue] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+
   useEffect(()=>{
+    Fonts()
     window.scrollTo(0,0)
   },[])
   return (

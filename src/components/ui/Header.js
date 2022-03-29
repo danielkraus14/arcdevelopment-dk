@@ -58,6 +58,20 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: "1.25em",
     },
   },
+  listItemExpansion:{
+    borderBottom: 0,
+    paddingTop: 11,
+    paddingBottom: 11,
+    '&.Mui-selected':{
+      backgroundColor: 'transparent'
+    },
+    '&.Mui-selected:hover':{
+      backgroundColor: 'transparent'
+    },
+    '&:hover':{
+      backgroundColor: 'transparent'
+    }
+  },
   logo: {
     height: "8em",
     [theme.breakpoints.down("md")]: {
@@ -123,10 +137,26 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
     "&.Mui-expanded": {
       margin: 0,
+      borderBottom: 0
     },
+    "&::before":{
+      backgroundColor: 'rgb(0,0,0,0)'
+    },
+    
   },
   expansionDetails:{
-    padding: 0
+    padding: 0,
+    backgroundColor: theme.palette.primary.light
+  },
+  expansionSummary:{
+    paddingLeft: 0, 
+    paddingRight: 12,
+    marginTop: 0,
+    marginBottom: 0,
+    backgroundColor: props => props.value === 1 ? 'rgba(0,0,0,0.14)' : 'inherit',
+    '&:hover':{
+      backgroundColor: 'rgba(0,0,0,0.08)'
+    }
   },
   menu: {
     backgroundColor: theme.palette.common.blue,
@@ -145,7 +175,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Header = (props) => {
-  const classes = useStyles();
+  const classes = useStyles(props);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
   const iOS =
@@ -369,8 +399,32 @@ const Header = (props) => {
                 elevation={0}
                 classes={{ root: classes.expansion }}
               >
-                <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-                  {route.name}
+                <ExpansionPanelSummary expandIcon={<ExpandMore sx={{fill: theme.palette.secondary.main}} />} classes={{root: classes.expansionSummary}}>
+                  <ListItem
+                    key={`${route}${route.activeIndex}`}
+                    divider
+                    button
+                    component={Link}
+                    to={route.link}
+                    onClick={() => {
+                      setOpenDrawer(false);
+                      props.setValue(route.activeIndex);
+                    }}
+                    selected={props.value === route.activeIndex}
+                    classes={{root: classes.listItemExpansion}}
+                  >
+                    <ListItemText
+                      disableTypography
+                      className={
+                        props.value === route.activeIndex
+                          ? classes.drawerItemSelected
+                          : classes.drawerItem
+                      }
+                      onClick={()=> {setOpenDrawer(false); props.setValue(route.activeIndex)} }
+                  >
+                      {route.name}
+                    </ListItemText>
+                  </ListItem>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails classes={{root: classes.expansionDetails}}>
                   <Grid container direction="column">
@@ -386,7 +440,7 @@ const Header = (props) => {
                             setOpenDrawer(false);
                             props.setSelectedIndex(route.selectedIndex);
                           }}
-                          selected={props.value === route.activeIndex}
+                          selected={props.selectedIndex === route.selectedIndex && props.value === 1 && window.location.pathname !== '/sevices'}
                         >
                           <ListItemText
                             disableTypography
@@ -396,7 +450,7 @@ const Header = (props) => {
                                 : classes.drawerItem
                             }
                           >
-                            {route.name}
+                            {route.name.split(" ").filter(word => word !== 'Development').join(" ")} <br /> <span style={{fontSize: '0.75rem'}}>Development</span>
                           </ListItemText>
                         </ListItem>
                       </Grid>
